@@ -1,0 +1,11 @@
+[package]
+name = "iron-diesel-middleware"
+version = "0.1.0"
+authors = ["Darayus Nanavati <darayus.contact@gmail.com>"]
+
+[dependencies]
+
+diesel = "0.5"
+iron = "0.2"
+r2d2 = "0.6"
+r2d2-diesel = "0.5"
