@@ -10,11 +10,12 @@ use std::error::Error;
 use std::sync::Arc;
 use diesel::pg::PgConnection;
 
+/// The type of the pool stored in `DieselMiddleware`.
 pub type DieselPool = Arc<r2d2::Pool<r2d2_diesel::ConnectionManager<PgConnection>>>;
 
-/// Iron middleware that allows for postgres connections within requests.
+/// Iron middleware that allows for diesel postgres connections within requests.
 pub struct DieselMiddleware {
-  /// A pool of postgres connections that are shared between requests.
+  /// A pool of diesel postgres connections that are shared between requests.
   pub pool: DieselPool,
 }
 
@@ -54,11 +55,15 @@ impl BeforeMiddleware for DieselMiddleware {
 /// ## Example
 ///
 /// ```ignore
-/// fn handler(req: &mut Request) -> IronResult<Response> {
-///   let conn = req.db_conn();
-///   con.execute("INSERT INTO foo (bar) VALUES ($1)", &[&1i32]).unwrap();
+/// use iron_diesel_middleware::DieselReqExt;
 ///
-///   Ok(Response::with((status::Ok, resp_str)))
+/// fn handler(req: &mut Request) -> IronResult<Response> {
+///   let connection = req.db_conn();
+///
+///   let new_user = NewUser::new("John Smith", 25);
+///   diesel::insert(&new_user).into(users::table).execute(&*connection);
+///
+///   Ok(Response::with((status::Ok, "Added User")))
 /// }
 /// ```
 pub trait DieselReqExt {
