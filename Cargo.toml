@@ -1,5 +1,5 @@
 [package]
-name = "iron-diesel-middleware"
+name = "iron_diesel_middleware"
 version = "0.1.0"
 authors = ["Darayus Nanavati <darayus.contact@gmail.com>"]
 
