@@ -1,4 +1,5 @@
 # Iron Diesel Middleware
+[![Build Status](https://travis-ci.org/darayus/iron-diesel-middleware.svg?branch=master)](https://travis-ci.org/darayus/iron-diesel-middleware)
 
 Middleware that provides diesel database connections (currently
 PostgreSQL **only**) within iron requests. This is a port of
