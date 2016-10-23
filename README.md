@@ -32,6 +32,7 @@ Documentation can be found [here](https://docs.darayus.com/iron_diesel_middlewar
 4. Use the diesel connection in requests:
    
    ```rust
+   // Requires that the DieselReqExt trait is included (for db_conn)
    fn example_handler(req: &mut Request) -> IronResult<Response> {
        let con = req.db_conn();
        let response_str = do_something_with(&*con);
