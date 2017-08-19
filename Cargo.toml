@@ -1,11 +1,11 @@
 [package]
 name = "iron_diesel_middleware"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["Darayus Nanavati <darayus.contact@gmail.com>"]
 
 [dependencies]
 
 iron = "0.5"
-diesel = { version = "0.10", features = ["postgres"] }
+diesel = ">= 0.16"
 r2d2 = "0.7"
-r2d2-diesel = "0.10"
+r2d2-diesel = ">= 0.16"

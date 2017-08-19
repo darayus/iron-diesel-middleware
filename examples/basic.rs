@@ -6,7 +6,7 @@ extern crate iron_diesel_middleware;
 use iron::prelude::*;
 use iron::status;
 use diesel::prelude::*;
-use iron_diesel_middleware::{DieselMiddleware, DieselReqExt};
+use iron_diesel_middleware::{DieselMiddleware, DieselPooledConnection, DieselReqExt};
 
 // Create this table in the `example_middleware` database:
 // CREATE TABLE users (
@@ -23,7 +23,7 @@ table! {
 
 pub fn list_users(req: &mut Request) -> IronResult<Response> {
     // Get a diesel connection
-    let con = req.db_conn();
+    let con: DieselPooledConnection<diesel::pg::PgConnection> = req.db_conn();
     let all_users: Vec<(i32, String)> = users::table.load(&*con).unwrap();
 
     let mut user_list = String::new();
@@ -36,7 +36,7 @@ pub fn list_users(req: &mut Request) -> IronResult<Response> {
 }
 
 pub fn main() {
-    let diesel_middleware = DieselMiddleware::new("postgresql://localhost/example_middleware").unwrap();
+    let diesel_middleware: DieselMiddleware<diesel::pg::PgConnection> = DieselMiddleware::new("postgresql://localhost/example_middleware").unwrap();
 
     // Link the middleware before every request so the middleware is
     // accessible to the request handler
