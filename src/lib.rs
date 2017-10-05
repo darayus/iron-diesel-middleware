@@ -34,7 +34,13 @@ impl<T: diesel::Connection> DieselMiddleware<T> {
     ///
     /// Returns `Err(err)` if there are any errors connecting to the sql database.
     pub fn new(connection_str: &str) -> Result<DieselMiddleware<T>, Box<Error>> {
-        let config = r2d2::Config::default();
+        Self::new_with_config(connection_str, r2d2::Config::default())
+    }
+    /// Creates a new connection pool, with the ability to set your own r2d2 configuration. 
+    pub fn new_with_config(
+      connection_str: &str,
+      config: r2d2::Config<T, r2d2_diesel::Error>
+    ) -> Result<DieselMiddleware<T>, Box<Error>> {
         let manager = r2d2_diesel::ConnectionManager::<T>::new(connection_str);
         let pool = try!(r2d2::Pool::new(config, manager));
 
