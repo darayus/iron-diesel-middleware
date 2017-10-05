@@ -1,6 +1,6 @@
 [package]
 name = "iron_diesel_middleware"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Darayus Nanavati <darayus.contact@gmail.com>"]
 
 [dependencies]
