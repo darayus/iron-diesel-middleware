@@ -11,7 +11,7 @@ Documentation can be found [here](https://docs.darayus.com/iron_diesel_middlewar
 1. Add the following to `Cargo.toml`:
 
    ```toml
-   diesel = { version = ">= 1.0, features = ["postgres"] }
+   diesel = { version = ">= 1.0", features = ["postgres"] }
    [dependencies.iron_diesel_middleware]
    git = "https://github.com/darayus/iron-diesel-middleware"
    ```
