@@ -7,10 +7,9 @@ use iron::prelude::*;
 use iron::{typemap, BeforeMiddleware};
 
 use std::error::Error;
-use std::sync::Arc;
 
 /// The type of the pool stored in `DieselMiddleware`.
-pub type DieselPool<T: diesel::Connection> = Arc<r2d2::Pool<r2d2_diesel::ConnectionManager<T>>>;
+pub type DieselPool<T: diesel::Connection> = r2d2::Pool<r2d2_diesel::ConnectionManager<T>>;
 
 pub type DieselPooledConnection<T: diesel::Connection> = r2d2::PooledConnection<r2d2_diesel::ConnectionManager<T>>;
 
@@ -39,7 +38,7 @@ impl<T: diesel::Connection> DieselMiddleware<T> {
     }
     /// Creates a instance of the middleware with the ability to provide a preconfigured pool.
     pub fn new_with_pool(pool: r2d2::Pool<r2d2_diesel::ConnectionManager<T>>) -> DieselMiddleware<T> {
-        DieselMiddleware {pool: Arc::new(pool)}
+        DieselMiddleware {pool: pool}
     }
 }
 
