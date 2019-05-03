@@ -1,17 +1,16 @@
 extern crate iron;
 extern crate diesel;
-extern crate r2d2;
-extern crate r2d2_diesel;
 
 use iron::prelude::*;
 use iron::{typemap, BeforeMiddleware};
+use diesel::r2d2::{Pool, ConnectionManager, PooledConnection};
 
 use std::error::Error;
 
 /// The type of the pool stored in `DieselMiddleware`.
-pub type DieselPool<T: diesel::Connection> = r2d2::Pool<r2d2_diesel::ConnectionManager<T>>;
+pub type DieselPool<T: diesel::Connection> = Pool<ConnectionManager<T>>;
 
-pub type DieselPooledConnection<T: diesel::Connection> = r2d2::PooledConnection<r2d2_diesel::ConnectionManager<T>>;
+pub type DieselPooledConnection<T: diesel::Connection> = PooledConnection<ConnectionManager<T>>;
 
 /// Iron middleware that allows for diesel connections within requests.
 pub struct DieselMiddleware<T: 'static + diesel::Connection> {
@@ -33,11 +32,11 @@ impl<T: diesel::Connection> DieselMiddleware<T> {
     ///
     /// Returns `Err(err)` if there are any errors connecting to the sql database.
     pub fn new(connection_str: &str) -> Result<DieselMiddleware<T>, Box<Error>> {
-        let manager = r2d2_diesel::ConnectionManager::<T>::new(connection_str); 
-        Ok(Self::new_with_pool(r2d2::Pool::builder().build(manager)?))
+        let manager = ConnectionManager::<T>::new(connection_str); 
+        Ok(Self::new_with_pool(Pool::builder().build(manager)?))
     }
     /// Creates a instance of the middleware with the ability to provide a preconfigured pool.
-    pub fn new_with_pool(pool: r2d2::Pool<r2d2_diesel::ConnectionManager<T>>) -> DieselMiddleware<T> {
+    pub fn new_with_pool(pool: Pool<ConnectionManager<T>>) -> DieselMiddleware<T> {
         DieselMiddleware {pool: pool}
     }
 }
@@ -71,11 +70,11 @@ pub trait DieselReqExt<T: 'static + diesel::Connection> {
   ///
   /// **Panics** if a `DieselMiddleware` has not been registered with Iron, or if retrieving
   /// a connection to the database times out.
-  fn db_conn(&self) -> r2d2::PooledConnection<r2d2_diesel::ConnectionManager<T>>;
+  fn db_conn(&self) -> PooledConnection<ConnectionManager<T>>;
 }
 
 impl<'a, 'b, T: 'static + diesel::Connection> DieselReqExt<T> for Request<'a, 'b> {
-  fn db_conn(&self) -> r2d2::PooledConnection<r2d2_diesel::ConnectionManager<T>> {
+  fn db_conn(&self) -> PooledConnection<ConnectionManager<T>> {
     let poll_value = self.extensions.get::<DieselMiddleware<T>>().unwrap();
     let &Value(ref poll) = poll_value;
 
